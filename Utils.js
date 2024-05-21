@@ -21,7 +21,7 @@ exports.getResponseHTML = (results, title) => {
 `;
 };
 
-exports.fetchTitle = async (address) => {
+exports.fetchTitle = async (address, callback) => {
   try {
     const url = address.startsWith('http') ? address : `http://${address}`;
     const response = await axios.get(url, {timeout: 5000});
@@ -31,21 +31,16 @@ exports.fetchTitle = async (address) => {
     const titleRes = title ? title : 'NO RESPONSE';
     const tag = {address, title: titleRes};
 
-    return tag;
+    return callback ? callback(null, tag) : tag;
   } catch (error) {
-    if (error.response) {
-      console.log('Response status:', error.response.status);
-      console.log('Response headers:', error.response.headers);
-      console.log('Response data:', error.response.data);
-    } else if (error.request) {
+    if (error.request) {
       const titleRes = 'NO RESPONSE';
       const tag = {address, title: titleRes};
 
-      return tag;
-    } else {
-      console.log('Request setup error:', error.message);
+      return callback ? callback(null, tag) : tag;
     }
 
+    callback && callback(error);
     return `${address} - Error fetching the title`;
   }
 };
