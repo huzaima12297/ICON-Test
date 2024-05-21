@@ -1,12 +1,12 @@
 const async = require('async');
-const {fetchTitle, getResponseHTML} = require('../Utils');
+const {getResponseHTML, fetchTitleAsync} = require('../Utils');
 
 exports.Controller = (req, res, addresses) => {
   let results = [];
 
   const tasks = addresses.map((address) => {
     return (callback) => {
-      fetchTitle(address, (err, tag) => {
+      fetchTitleAsync(address, (err, tag) => {
         if (err) {
           callback(err);
         } else {
